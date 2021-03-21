@@ -1,62 +1,88 @@
-#include <stdio.h>
 #include "phoenixLib.h"
 
-int main()
-{
-    translateOutput(); // Перевод консоли на кириллицу.
-    char str1[80], str2[80], str3[160]; //Объявление массивов символов.
-    int i, j, count;
+void squeeze (char s[], int c);
+char* changeChars(char s[], const char* dist, const char* src);
+unsigned int whichLength(const char s[]);
+// void sumStrings(const char* str1, const char* str2, char* str3);
 
-/*Ввод строк*/
-    printf("Введите первую строку:\t");
-    gets(str1); //Вывел первую строку.
+int main(){
+    translateOutput(); // Перевод консоли на кириллицу
 
-    printf("Введите вторую строку\t");
-    gets(str2); //Вывел вторую строку.
+    char firstString[100] = {0}; // Объявил переменные, инициилизировал как пустые
+    char secondString[100] = {0};
 
-/*Подсчет длины*/
-    i=0;
-    while(str1[i++]!='\0');
-    printf("Длина первой ствроки:\t%d символов\n",i-1);
+    puts("Введите строку: ");
+    gets(firstString); // Ввёл строку в переменную
+    puts("\n Введите строку: ");
+    gets(secondString);
 
-    j=0;
-    while(str2[j++]!='\0');
-    printf("Длина второй строки:\t%d символов\n",j-1);
-/*Соединение строк*/
-    i=0,j=0;
-    for (int i = 0; str1[i] != '\0'; ++i) //Вносим первый массив в третий.
-    {
-        if (str1[i]!=' ')
-        {
-            str3[j]=str1[i];
+    printf("\nДлины строк:\n Первая строка: %d\n Вторая строка: %d\n\n", whichLength(firstString), whichLength(secondString));
+
+    char thirdString[200] = {0};
+
+    // sumStrings(*&firstString, *&secondString, *&thirdString);
+
+    int i, j = 0;
+    for (i = 0; firstString[i] != '\0'; ++i){ // Вносим первый массив в третий.
+        if (firstString[i] != ' '){
+            thirdString[j] = firstString[i];
             j++;
         }
     }
-    for ( i=0; str2[i] != '\0'; ++i) //Вносим второй массив в третий.
-    {
-        if (str2[i]!=' ')
+    for (i = 0; secondString[i] != '\0'; ++i){ // Вносим второй массив в третий.
+        if (secondString[i] != ' ')
         {
-            str3[j]=str2[i];
+            thirdString[j] = secondString[i];
             j++;
         }
     }
-    printf("Первая строка плюс вторая строка:\t");
-    puts(str3); //Вывел соедененную строку.
-/*Замена пары XY на пару 12*/
-    i=0;
-    do {
-        if(str3[i]=='X' && str3[i+1]=='Y')
-        {
-            str3[i]='1';
-            str3[i+1]='2';
-            count++;
-            if (count>=4)break;
-        }
-        i++;
-    } while (count<=4);
-    printf("Измененная строка:\t");
-    puts(str3); //Вывел конечную строку
 
+    squeeze(thirdString, ' '); // Удалил пробелы
+
+    printf("%s\n", thirdString); // Вывод суммы двух строк
+
+    char alphabet[] = {'X', 'Y'}; // Набор для функции "какие символы менять"
+    char targetChanges[] = {'1', '2'}; // набор "на что менять"
+
+    puts(changeChars(thirdString, alphabet, targetChanges));
 
     return 0;
+}
+
+void squeeze (char s[], int c) { // Удаление пробелов
+    int i, j;
+
+    for (i = j = 0; s[i] != '\0'; i++)
+        if (s[i] != c)
+            s[j++] = s[i];
+    s[j] = '\0';
+}
+
+char* changeChars(char s[], const char* dist, const char* src){ // Замена XY на 12
+    int i = 0;
+    int k = 0;
+
+    do{
+        if((*&s[*&i] == *&dist[0]) && (*&s[i+1] == *&dist[1])){
+
+        *&s[i] = *&src[0];
+        *&s[i+1] = *&src[1];
+        *&k += 1;
+        }
+        *&i += 1;
+    }
+    while((*&s[*&i] != '\0') && (*&k < 4));
+
+    return s;
+}
+
+unsigned int whichLength(const char s[]){ // Подсчёт длины
+    int i = 0;
+    int j = 0;
+
+    while((s[*&i] != '\0')){
+        *&i += 1;
+        *&j += 1;
+    }
+    return *&j;
 }
